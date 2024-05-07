@@ -3,28 +3,12 @@ import requests
 from fake_useragent import UserAgent
 
 def parse():
-    url = 'https://pepper.ru/'
+    url = 'https://ru.investing.com/currencies/usd-rub'
     page = requests.get(url, headers={'User-Agent': UserAgent().chrome})
     print(page.status_code)
     soup = BeautifulSoup(page.text, "html.parser")
-    blocktitle = soup.findAll('a', class_='cept-tt thread-link linkPlain thread-title--list js-thread-title')
-    blockdegrees = soup.findAll('span', class_ = ['cept-vote-temp vote-temp vote-temp--hot', 'cept-vote-temp vote-temp vote-temp--burn', 'space--h-2 text--b'])
-    titles = []
-    degreesinput = []
-    degreesoutput = []
-    links = []
-    for data in blocktitle:
-        titles.append(data.get('title'))
-    for data in blockdegrees:
-        degreesinput.append(data.string)
-    for data in blocktitle:
-        links.append(data.get('href'))
-    for line in degreesinput:
-        if line == "Горячо!":
-            continue
-        line = line.replace('\n', '').replace('\t', '')
-        degreesoutput.append(line)
-    for l,b,a in zip(titles, degreesoutput, links):
-        print("Название: ",l,"Градусы: ", b,"Ссылка: ", a)
-    print(len(links))
+    blockall = soup.find('div', class_ = 'text-5xl/9 font-bold text-[#232526] md:text-[42px] md:leading-[60px]')
+    usd = blockall.string
+    usd = usd.replace(',', '.')
+    return usd
 
